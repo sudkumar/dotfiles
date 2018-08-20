@@ -1,10 +1,8 @@
-set -g default-command "login-shell"
-
 # tmux display things in 256 colors
-set -g default-terminal "tmux-256color-italic"
+set -g default-terminal "xterm-256color"
 
 #  enable terminal compability
-set-option -ga terminal-overrides ",tmux-256color-italic:Tc"
+# set-option -ga terminal-overrides ",tmux-256color-italic:Tc"
 
 set -g history-limit 20000
 
@@ -48,6 +46,9 @@ set -g mouse on
 setw -g monitor-activity on
 set -g visual-activity on
 
+# Add path to DOTFILES as an environment variable that
+# is reachable by the tmux config scripts
+set-environment -g DOTFILES "$DOTFILES"
 
 ######################
 #### Key Bindings ####
@@ -78,6 +79,9 @@ bind -r L resize-pane -R 10
 #####################
 # List of plugins #
 ####################
+
+if "test ! -d ~/.tmux/plugins/tpm" \
+   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 
 set -g @plugin 'tmux-plugins/tpm'
 # basic configuration

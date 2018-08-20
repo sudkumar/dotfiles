@@ -16,15 +16,15 @@ for file in $linkables; do
     filename=".$( basename "$file" '.symlink' )"
     target="$HOME/$filename"
     if [ -f "$target" ]; then
-        echo "backing up $filename"
+        echo "backing up $filename from $target"
         cp "$target" "$BACKUP_DIR"
     else
         echo -e "$filename does not exist at this location or is a symlink"
     fi
 done
 
-for filename in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc"; do
-    if [ ! -L "$filename" ]; then
+for filename in "$HOME/.config/nvim" "$HOME/.vim" "$HOME/.vimrc" "$HOME/.tmux"; do
+    if [ -e "$filename" ] && [ ! -L "$filename" ]; then
         echo "backing up $filename"
         cp -rf "$filename" "$BACKUP_DIR"
     else

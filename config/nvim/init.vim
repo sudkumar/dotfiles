@@ -85,8 +85,6 @@ set foldlevel=1
 
 " toggle invisible characters
 set list
-set listchars=tab:→\ ,eol:¬,trail:⋅,extends:❯,precedes:❮
-set showbreak=↪
 
 set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
 " switch cursor to line when in insert mode, and block when not
@@ -202,41 +200,41 @@ augroup END
 
     " Fancy startup screen for vim
     Plug 'mhinz/vim-startify'
-    " Don't change to directory when selecting a file
-    let g:startify_files_number = 5
-    let g:startify_change_to_dir = 0
-    let g:startify_custom_header = [ ]
-    let g:startify_relative_path = 1
-    let g:startify_use_env = 1
 
-    function! s:list_commits()
-        let git = 'git -C ' . getcwd()
-        let commits = systemlist(git . ' log --oneline | head -n5')
-        let git = 'G' . git[1:]
-        return map(commits, '{"line": matchstr(v:val, "\\s\\zs.*"), "cmd": "'. git .' show ". matchstr(v:val, "^\\x\\+") }')
-    endfunction
+        " Don't change to directory when selecting a file
+        let g:startify_files_number = 5
+        let g:startify_change_to_dir = 0
+        let g:startify_custom_header = [ ]
+        let g:startify_relative_path = 1
+        let g:startify_use_env = 1
 
-    " Custom startup list, only show MRU from current directory/project
-    let g:startify_lists = [
-    \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
-    \  { 'type': function('s:list_commits'), 'header': [ 'Recent Commits' ] },
-    \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
-    \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
-    \  { 'type': 'commands',  'header': [ 'Commands' ]       },
-    \ ]
+        function! s:list_commits()
+            let git = 'git -C ' . getcwd()
+            let commits = systemlist(git . ' log --oneline | head -n5')
+            let git = 'G' . git[1:]
+            return map(commits, '{"line": matchstr(v:val, "\\s\\zs.*"), "cmd": "'. git .' show ". matchstr(v:val, "^\\x\\+") }')
+        endfunction
 
-    let g:startify_commands = [
-    \   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
-    \   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
-    \ ]
+        " Custom startup list, only show MRU from current directory/project
+        let g:startify_lists = [
+        \  { 'type': 'dir',       'header': [ 'Files '. getcwd() ] },
+        \  { 'type': function('s:list_commits'), 'header': [ 'Recent Commits' ] },
+        \  { 'type': 'sessions',  'header': [ 'Sessions' ]       },
+        \  { 'type': 'bookmarks', 'header': [ 'Bookmarks' ]      },
+        \  { 'type': 'commands',  'header': [ 'Commands' ]       },
+        \ ]
 
-    let g:startify_bookmarks = [
-        \ { 'c': '~/code/dotfiles/config/nvim/init.vim' },
-        \ { 'z': '~/code/dotfiles/zsh/zshrc.symlink' }
-    \ ]
+        let g:startify_commands = [
+        \   { 'up': [ 'Update Plugins', ':PlugUpdate' ] },
+        \   { 'ug': [ 'Upgrade Plugin Manager', ':PlugUpgrade' ] },
+        \ ]
 
-    autocmd User Startified setlocal cursorline
+        let g:startify_bookmarks = [
+            \ { 'c': '~/code/dotfiles/config/nvim/init.vim' },
+            \ { 'z': '~/code/dotfiles/zsh/zshrc.symlink' }
+        \ ]
 
+        autocmd User Startified setlocal cursorline
 
     " Open selection in carbon.now.sh
     Plug 'kristijanhusak/vim-carbon-now-sh'
@@ -265,7 +263,7 @@ augroup END
 
     " Toggle NERDTree
     function! ToggleNerdTree()
-        if @% != "" && @% !~ "Startify" && (!exists("g:NERDTree") || (g:NERDTree.ExistsForTab() && !g:NERDTree.IsOpen()))
+        if @% != "" && (!exists("g:NERDTree") || (g:NERDTree.ExistsForTab() && !g:NERDTree.IsOpen()))
             :NERDTreeFind
         else
             :NERDTreeToggle
@@ -317,7 +315,6 @@ augroup END
     imap <c-x><c-f> <plug>(fzf-complete-path)
     imap <c-x><c-j> <plug>(fzf-complete-file-ag)
     imap <c-x><c-l> <plug>(fzf-complete-line)
-
     nnoremap <silent> <Leader>C :call fzf#run({
     \   'source':
     \     map(split(globpath(&rtp, "colors/*.vim"), "\n"),
@@ -340,6 +337,7 @@ augroup END
         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview('right:50%', '?'), <bang>0)
     command! -bang -nargs=? -complete=dir GitFiles
         \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview('right:50%', '?'), <bang>0)
+
 
     " signify
     Plug 'mhinz/vim-signify'
@@ -402,6 +400,9 @@ augroup END
     endif
     let g:deoplete#enable_at_startup = 1
 
+    " Airline
+    Plug 'vim-airline/vim-airline'
+
 
 
 " Language-Specific Configuration
@@ -440,10 +441,7 @@ call plug#end()
 
 
 " Final setup
-
-let g:onedark_termcolors=16
-let g:onedark_terminal_italics=1
-colorscheme onedark
+colorscheme nova
 syntax on
 filetype plugin indent on
 " make the highlighting of tabs and other non-text less annoying

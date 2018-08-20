@@ -20,6 +20,15 @@ function appendToPath {
 export DOTFILES=$HOME/.dotfiles
 export ZSH=$DOTFILES/zsh
 
+export EDITOR='nvim'
+export GIT_EDITOR='nvim'
+
+prependToPath "/usr/local/bin"
+prependToPath "/usr/local/sbin"
+prependToPath "$HOME/local/bin"
+
+# adding path directory for custom scripts
+prependToPath "$DOTFILES/bin"
 
 command_exists() {
     type "$1" > /dev/null 2>&1
@@ -43,25 +52,17 @@ fi
 autoload -U compinit add-zsh-hook
 compinit
 
-for config ($ZSH/**/*completion.sh) source $config
 
-export EDITOR='nvim'
-export GIT_EDITOR='nvim'
 
-prependToPath "/usr/local/bin"
-prependToPath "/usr/local/sbin"
-prependToPath "$HOME/local/bin"
-
-# adding path directory for custom scripts
-prependToPath "$DOTFILES/bin"
+# for config ($ZSH/**/*completion.sh) source $config
 
 # add a config file for ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
 if [ -z "$TMUX" ]; then
-    export TERM=xterm-256color-italic
+    export TERM=xterm-256color
 else
-    export TERM=tmux-256color-italic
+    export TERM=xterm-256color
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -72,15 +73,17 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 if [ -z ${RELOAD}  ]; then
     export ZPLUG_HOME="$(brew --prefix)/opt/zplug"
     source $ZPLUG_HOME/init.zsh
-    zplug 'zplug/zplug', hook-build:'zplug --self-manage'
-    zplug 'zsh-users/zsh-syntax-highlighting', defer:2
-    zplug 'zsh-users/zsh-autosuggestions'
+    zplug "zplug/zplug", hook-build:'zplug --self-manage'
+    zplug "zsh-users/zsh-syntax-highlighting", defer:2
+    zplug "zsh-users/zsh-autosuggestions"
+    zplug "plugins/git",   from:oh-my-zsh
+    zplug "dracula/zsh", as:theme
     export NVM_AUTO_USE=true
     # export NVM_NO_USE=true
     zplug 'lukechilds/zsh-nvm'
 
-    if ! zplug check; then
-        printf "Install? [y/N]: "
+    if ! zplug check --verbose; then
+        printf "Install zplug? [y/N]: "
         if read -q; then
             echo; zplug install
         fi
@@ -93,7 +96,6 @@ fi
 bindkey -M viins "^F" vi-forward-word
 # Move to end of line with ctrl-E
 bindkey -M viins "^E" vi-add-eol
-
 
 # add color to man pages
 export MANROFFOPT='-c'

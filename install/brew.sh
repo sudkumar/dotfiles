@@ -2,8 +2,8 @@
 
 if test ! "$( which brew )"; then
     echo "Installing homebrew into $HOME/local"
-    mkdir -p "$HOME/local" >> /dev/null
-    curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$HOME/local"
+    mkdir -p "$BREW_INSTALL" >> /dev/null
+    curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C "$BREW_INSTALL"
 fi
 
 echo -e "\\n\\nInstalling homebrew packages..."
@@ -14,16 +14,17 @@ formulas=(
     diff-so-fancy
     fzf
     git
-    'grep --with-default-names'
-    neovim/neovim/neovim
-    tmux
-    vim
-    zsh
-    ripgrep
-    the_silver_searcher
     git-standup
+    'grep --with-default-names'
+    neovim
+    tmux
+    zsh
     zplug
+    the_silver_searcher
+    ripgrep
+    vim
     python
+    ruby
 )
 
 for formula in "${formulas[@]}"; do
@@ -31,7 +32,7 @@ for formula in "${formulas[@]}"; do
     if brew list "$formula_name" > /dev/null 2>&1; then
         echo "$formula_name already installed... skipping."
     else
-        brew install "$formula"
+        brew install --verbose --debug "$formula"
     fi
 done
 
@@ -50,6 +51,8 @@ echo "=============================="
 pip2 install --user neovim
 pip3 install --user neovim
 
+gem install teamocil
+mkdir -p ~/.teamocil
 
 # Change the default shell to zsh
 zsh_path="$( which zsh )"

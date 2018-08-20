@@ -141,10 +141,10 @@ nmap ;s :set invspell spelllang=en<cr>
 vnoremap . :normal .<cr>
 
 " Quicker window movement
-map <silent> <C-h> :call functions#WinMove('h')<cr>
-map <silent> <C-j> :call functions#WinMove('j')<cr>
-map <silent> <C-k> :call functions#WinMove('k')<cr>
-map <silent> <C-l> :call functions#WinMove('l')<cr>
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
 
 set cursorline
 " toggler between line and column highlight
@@ -185,6 +185,9 @@ augroup END
 
     " mappings to easily delete, change and add such surroundings in pairs, such as quotes, parens, etc.
     Plug 'tpope/vim-surround'
+
+    " Seamless navigation between tmux panes and vim splits
+    Plug 'christoomey/vim-tmux-navigator'
 
     " tmux integration for vim
     Plug 'benmills/vimux'

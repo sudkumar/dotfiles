@@ -1,4 +1,4 @@
-# tmux display things in 256 colors
+set -ga terminal-overrides ",xterm-256color:Tc"
 set -g default-terminal "xterm-256color"
 
 #  enable terminal compability

@@ -59,11 +59,7 @@ compinit
 # add a config file for ripgrep
 export RIPGREP_CONFIG_PATH="$HOME/.rgrc"
 
-if [ -z "$TMUX" ]; then
-    export TERM=xterm-256color
-else
-    export TERM=xterm-256color
-fi
+export TERM=xterm-256color
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'

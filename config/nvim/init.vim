@@ -372,22 +372,28 @@ augroup END
     let g:ale_echo_msg_error_str = '✖'
     let g:ale_echo_msg_warning_str = '⚠'
     let g:ale_echo_msg_format = '%severity% %s% [%linter%% code%]'
+    " Enable completion where available.
+    let g:ale_completion_enabled = 1
 
     let g:ale_linters = {
-    \   'javascript': ['eslint', 'tsserver'],
-    \   'typescript': ['tsserver', 'tslint'],
+    \   'javascript': ['eslint'],
     \   'html': []
     \}
-    let g:ale_fixers = {}
-    let g:ale_fixers['javascript'] = ['prettier']
-    let g:ale_fixers['typescript'] = ['prettier', 'tslint']
-    let g:ale_fixers['json'] = ['prettier']
-    let g:ale_fixers['css'] = ['prettier']
-    let g:ale_fixers['scss'] = ['prettier']
-    let g:ale_fixers['yaml'] = ['prettier']
-    let g:ale_fixers['markdown'] = ['prettier']
+    let g:ale_fixers = {
+    \   'javascript': ['prettier'],
+    \   'json': ['prettier'],
+    \   'css': ['prettier'],
+    \   'scss': ['prettier'],
+    \   'yaml': ['prettier'],
+    \   'markdown': ['prettier']
+    \}
     let g:ale_javascript_prettier_use_local_config = 1
     let g:ale_fix_on_save = 1
+    " cache the linters
+    let g:ale_cache_executable_check_failures = 1
+    " Move between linting errors
+    nnoremap ]r :ALENextWrap<CR>
+    nnoremap [r :ALEPreviousWrap<CR>
 
     " UltiSnips
     Plug 'SirVer/ultisnips' " Snippets plugin

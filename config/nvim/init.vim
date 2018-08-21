@@ -164,8 +164,6 @@ augroup configgroup
     autocmd VimResized * exe 'normal! \<c-w>='
     autocmd BufWritePost .vimrc,.vimrc.local,init.vim source %
     autocmd BufWritePost .vimrc.local source %
-    " save all files on focus lost, ignoring warnings about untitled buffers
-    autocmd FocusLost * silent! wa
 
     " make quickfix windows take all the lower section of the screen
     " when there are multiple windows open
@@ -173,6 +171,19 @@ augroup configgroup
     autocmd FileType qf nmap <buffer> q :q<cr>
 augroup END
 
+augroup vimrcEx
+    autocmd!
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it for commit messages, when the position is invalid, or when
+    " inside an event handler (happens when dropping a file on gvim).
+    autocmd BufReadPost *
+        \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal g`\"" |
+        \ endif
+    " Set syntax highlighting for specific file types
+    autocmd BufRead,BufNewFile *.md set filetype=markdown
+    autocmd BufRead,BufNewFile .{jscs,jshint,eslint,prettier,babel}rc set filetype=json
+augroup END
 
 " Plugins
 " General Functionality
@@ -424,6 +435,8 @@ augroup END
     \      'extends': 'jsx',
     \  },
     \}
+    " emmet settings
+    let g:user_emmet_leader_key='<C-e>'
 
     " match tags in html, similar to paren support
     Plug 'gregsexton/MatchTag', { 'for': 'html' }

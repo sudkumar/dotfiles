@@ -83,9 +83,6 @@ set foldnestmax=10 " deepest fold is 10 levels
 set nofoldenable " don't fold by default
 set foldlevel=1
 
-" toggle invisible characters
-set list
-
 set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
 " switch cursor to line when in insert mode, and block when not
 set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
@@ -169,10 +166,6 @@ augroup configgroup
     " when there are multiple windows open
     autocmd FileType qf wincmd J
     autocmd FileType qf nmap <buffer> q :q<cr>
-augroup END
-
-augroup vimrcEx
-    autocmd!
     " When editing a file, always jump to the last known cursor position.
     " Don't do it for commit messages, when the position is invalid, or when
     " inside an event handler (happens when dropping a file on gvim).
@@ -184,6 +177,7 @@ augroup vimrcEx
     autocmd BufRead,BufNewFile *.md set filetype=markdown
     autocmd BufRead,BufNewFile .{jscs,jshint,eslint,prettier,babel}rc set filetype=json
 augroup END
+
 
 " Plugins
 " General Functionality
@@ -398,13 +392,23 @@ augroup END
     \   'yaml': ['prettier'],
     \   'markdown': ['prettier']
     \}
-    let g:ale_javascript_prettier_use_local_config = 1
     let g:ale_fix_on_save = 1
     " cache the linters
-    let g:ale_cache_executable_check_failures = 1
     " Move between linting errors
     nnoremap ]r :ALENextWrap<CR>
     nnoremap [r :ALEPreviousWrap<CR>
+     augroup nerdtree
+        autocmd!
+        autocmd FileType nerdtree setlocal nolist " turn off whitespace characters
+        autocmd FileType nerdtree setlocal nocursorline " turn off line highlighting for performance
+    augroup END
+    augroup ale
+        autocmd!
+        autocmd CursorHold * call ale#Lint()
+        autocmd CursorHoldI * call ale#Lint()
+        autocmd InsertLeave * call ale#Lint()
+        autocmd InsertEnter * call ale#Lint()
+    augroup END
 
     " UltiSnips
     Plug 'SirVer/ultisnips' " Snippets plugin

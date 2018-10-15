@@ -1,12 +1,5 @@
 # Dotfiles
 
-## Installation
-
-### Backup files
-```bash
- install/backup.sh
-```
-
 ### Install
 
 Install xcode dev tools in you are on mac.
@@ -21,9 +14,11 @@ git clone https://github.com/sudkumar/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ./install.sh
 ```
-
-#### VIM Installation
-
+### Backup files
 ```bash
-nvim +PlugInstall
+ install/backup.sh
+```
+#### VIM Installation
+```bash
+vim +PlugInstall
 ```

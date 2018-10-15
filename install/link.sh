@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOTFILES=$HOME/.dotfiles
+DOTFILES=$HOME/dotfiles
 
 echo -e "\\nCreating symlinks"
 echo "=============================="
@@ -15,7 +15,7 @@ for file in $linkables ; do
     fi
 done
 
-echo -e "\\n\\ninstalling to ~/.config"
+echo -e "\\n\\nInstalling to ~/.config"
 echo "=============================="
 if [ ! -d "$HOME/.config" ]; then
     echo "Creating ~/.config"
@@ -55,3 +55,9 @@ for file in "${VIMFILES[@]}"; do
         ln -s "${VALUE}" "${KEY}"
     fi
 done
+
+echo "creating vim directories"
+mkdir -p ~/.vim-tmp
+
+echo "installing vim plugins"
+vim  +VimEnter +PlugInstall +qall

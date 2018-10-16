@@ -54,9 +54,7 @@ call plug#begin('~/.vim/plugged')
         let g:airline#extensions#ale#enabled = 1
 
         " Automatically displays all buffers when there's only one tab open.
-        let g:airline#extensions#tabline#enabled = 1
-        " only show the file name
-        let g:airline#extensions#tabline#formatter = 'unique_tail'
+        let g:airline#extensions#tabline#enabled = 0
         " enable the powerline fonts
         let g:airline_powerline_fonts = 1
         " no whitespace extension required

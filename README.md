@@ -5,7 +5,7 @@
 Install xcode dev tools in you are on mac.
 ```bash
 xcode-select --install
-``` 
+```
 
 Then clone to `~/.dotfiles` and install
 
@@ -22,3 +22,6 @@ cd ~/.dotfiles
 ```bash
 vim +PlugInstall
 ```
+
+#### Fonts
+Install Powerline fonts for your os and setup them for your terminal

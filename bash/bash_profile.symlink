@@ -24,7 +24,6 @@ export DOTFILES=$HOME/.dotfiles
 # base local
 prependToPath "/usr/local/bin"
 prependToPath "/usr/local/sbin"
-prependToPath "$(brew --prefix php@7.1)/bin:$PATH"
 
 # composer overrides
 prependToPath "$HOME/.composer/vendor/bin:$PATH"
@@ -32,8 +31,6 @@ prependToPath "$HOME/.composer/vendor/bin:$PATH"
 # user overrides
 prependToPath "$HOME/local/bin"
 prependToPath "$DOTFILES/bin"
-
-complete -W "$(teamocil --list)" teamocil
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

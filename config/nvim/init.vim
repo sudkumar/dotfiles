@@ -156,8 +156,6 @@ call plug#begin('~/.vim/plugged')
         " navigate between errors
         nmap <silent> [e <Plug>(ale_previous_wrap)
         nmap <silent> ]e <Plug>(ale_next_wrap)
-        " window of quickfix
-        let g:ale_open_list = 1
 
         " message formatting
         let g:ale_sign_error = 'x'

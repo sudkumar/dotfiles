@@ -19,4 +19,7 @@ source install/git.sh
 gem install teamocil
 mkdir -p ~/.teamocil
 
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+echo "run nvm install --lts to install lts node"
+
 echo "Done. Reload your terminal."

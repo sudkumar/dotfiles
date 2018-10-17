@@ -74,7 +74,7 @@
     assumed = "!git ls-files -v | grep ^h | cut -c 3-"
     unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
 
-    # clean up all 
+    # clean up all
     forget = "!git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D"
 
     # show the most recently touched branches
@@ -115,10 +115,15 @@
     local = green
     remote = red bold
 [color "diff"]
+    # from diff-so-fancy
+    # https://github.com/so-fancy/diff-so-fancy#improved-colors-for-the-highlighted-bits
     meta = yellow bold
     frag = magenta bold
+    commit = yellow bold
     old = red bold
     new = green bold
+    whitespace = red reverse
+
 [color "status"]
     added = green bold
     changed = yellow bold

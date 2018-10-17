@@ -20,6 +20,7 @@ function appendToPath {
 }
 
 export DOTFILES=$HOME/.dotfiles
+export BASH=$DOTFILES/bash
 
 # base local
 prependToPath "/usr/local/bin"
@@ -32,9 +33,22 @@ prependToPath "$HOME/.composer/vendor/bin:$PATH"
 prependToPath "$HOME/local/bin"
 prependToPath "$DOTFILES/bin"
 
+export EDITOR='nvim'
+export GIT_EDITOR='nvim'
+
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# display how long all tasks over 10 seconds take
+export REPORTTIME=10
+
+# source all .bash files inside of the bash/ directory
+for config in $BASH/*.bash; do
+    source $config
+done
+
+[[ -e ~/.terminfo ]] && export TERMINFO_DIRS=~/.terminfo:/usr/share/terminfo
 
 # source the aliases
 if [ -f ~/.bash_aliases ]; then

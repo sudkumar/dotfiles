@@ -44,7 +44,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'
     " surround.vim: quoting/parenthesizing made simple
     Plug 'tpope/vim-surround'
-    " EditorConfig plugin for Vim 
+    " EditorConfig plugin for Vim
     Plug 'editorconfig/editorconfig-vim'
     " lean & mean status/tabline for vim that's light as air
     Plug 'vim-airline/vim-airline'
@@ -62,7 +62,7 @@ call plug#begin('~/.vim/plugged')
         " enable the tmuxline extension
         let g:airline#extensions#tmuxline#enabled = 1
 
-    " Fuzzy file, buffer, mru, tag, etc finder. 
+    " Fuzzy file, buffer, mru, tag, etc finder.
     Plug 'ctrlpvim/ctrlp.vim'
     " settings
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
@@ -71,6 +71,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'sheerun/vim-polyglot'
     " nova theme
     Plug 'trevordmiller/nova-vim'
+    " github color scheme
+    Plug 'cormacrelf/vim-colors-github'
     " nerd tree
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
     " settings
@@ -96,7 +98,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'christoomey/vim-tmux-navigator'
 
 " Git
-    " A Git wrapper so awesome, it should be illegal 
+    " A Git wrapper so awesome, it should be illegal
     Plug 'tpope/vim-fugitive'
 
     if has("signs")
@@ -104,8 +106,8 @@ call plug#begin('~/.vim/plugged')
         Plug 'airblade/vim-gitgutter'
         " vim gitgutter
             " jump between hunks
-            nmap <leader>h <Plug>GitGutterNextHunk
-            nmap <leader>h <Plug>GitGutterPrevHunk
+            nmap [h <Plug>GitGutterNextHunk
+            nmap ]h <Plug>GitGutterPrevHunk
     endif
 
 " Language specific
@@ -197,5 +199,8 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-silent! colorscheme nova
+" use a slightly darker background, like GitHub inline code blocks
+let g:github_colors_soft = 1
+
+silent! colorscheme github
 

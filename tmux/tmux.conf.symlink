@@ -1,6 +1,7 @@
 # setup for nova theme
 set -ga terminal-overrides ",xterm-256color:Tc"
 set -g default-terminal "xterm-256color"
+set-environment -g DOTFILES "$DOTFILES"
 
 # enable vi mode
 setw -g mode-keys vi
@@ -46,7 +47,7 @@ bind -r L resize-pane -R 10
 ##############################
 ### Color & Style Settings ###
 ##############################
-source ./theme.sh
+source "$DOTFILES/tmux/theme.sh"
 
 #####################
 # List of plugins #

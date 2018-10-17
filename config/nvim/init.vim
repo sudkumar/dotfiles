@@ -67,12 +67,10 @@ call plug#begin('~/.vim/plugged')
     " settings
         let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
-    " A solid language pack for Vim.
-    Plug 'sheerun/vim-polyglot'
-    " nova theme
-    Plug 'trevordmiller/nova-vim'
     " github color scheme
     Plug 'cormacrelf/vim-colors-github'
+    " Retro groove color scheme for Vim
+    Plug 'morhetz/gruvbox'
     " nerd tree
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
     " settings
@@ -202,5 +200,6 @@ nnoremap <C-l> <C-w>l
 " use a slightly darker background, like GitHub inline code blocks
 let g:github_colors_soft = 1
 
-silent! colorscheme github
+silent! colorscheme gruvbox
+set background=dark
 

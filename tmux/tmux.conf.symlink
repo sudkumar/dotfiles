@@ -1,12 +1,6 @@
 # setup for nova theme
 set -ga terminal-overrides ",xterm-256color:Tc"
 set -g default-terminal "xterm-256color"
-set -g status-style 'bg=#1E272C,fg=#6A7D89'
-set -g window-status-current-style 'fg=cyan'
-set -g mode-style 'bg=cyan,fg=black'
-set -g message-style 'bg=black,fg=cyan'
-set -g pane-border-style 'bg=black,fg=#1E272C'
-set -g pane-active-border-style 'bg=black,fg=#1E272C'
 
 # enable vi mode
 setw -g mode-keys vi
@@ -49,6 +43,11 @@ bind -r J resize-pane -D 10
 bind -r K resize-pane -U 10
 bind -r L resize-pane -R 10
 
+##############################
+### Color & Style Settings ###
+##############################
+source ./theme.sh
+
 #####################
 # List of plugins #
 ####################
@@ -58,8 +57,6 @@ set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 # keep me alive accross shutdowns
 set -g @plugin 'tmux-plugins/tmux-resurrect'
-# nova theme
-set -g @plugin 'trevordmiller/nova-tmux'
 # vim tmux navigator with C-[hjkl]
 set -g @plugin 'christoomey/vim-tmux-navigator'
 

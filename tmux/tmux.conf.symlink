@@ -44,11 +44,6 @@ bind -r J resize-pane -D 10
 bind -r K resize-pane -U 10
 bind -r L resize-pane -R 10
 
-##############################
-### Color & Style Settings ###
-##############################
-source "$DOTFILES/tmux/theme.sh"
-
 #####################
 # List of plugins #
 ####################
@@ -60,6 +55,8 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 # vim tmux navigator with C-[hjkl]
 set -g @plugin 'christoomey/vim-tmux-navigator'
+
+set -g @plugin 'odedlaz/tmux-onedark-theme'
 
 if "test ! -d ~/.tmux/plugins/tpm" \
    "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"

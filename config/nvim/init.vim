@@ -59,8 +59,6 @@ call plug#begin('~/.vim/plugged')
         let g:airline_powerline_fonts = 1
         " no whitespace extension required
         let g:airline#extensions#whitespace#enabled = 0
-        " enable the tmuxline extension
-        let g:airline#extensions#tmuxline#enabled = 1
 
     " Fuzzy file, buffer, mru, tag, etc finder.
     Plug 'ctrlpvim/ctrlp.vim'
@@ -92,8 +90,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-startify'
 
 " Tmux integration
-    " Simple tmux statusline generator with support for powerline symbols and statusline / airline / lightline integration
-    Plug 'edkolev/tmuxline.vim'
     " seamless navigation betweeen tmux and vim
     Plug 'christoomey/vim-tmux-navigator'
 

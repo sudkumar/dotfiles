@@ -69,8 +69,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'sheerun/vim-polyglot'
     " github color scheme
     Plug 'cormacrelf/vim-colors-github'
-    " one dark color scheme
-    Plug 'joshdick/onedark.vim'
+    " Light & Dark Vim color schemes inspired by Google's Material Design
+    Plug 'NLKNguyen/papercolor-theme'
     " nerd tree
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
     " settings
@@ -107,6 +107,16 @@ call plug#begin('~/.vim/plugged')
     endif
 
 " Language specific
+    " Javascript syntax
+    Plug 'pangloss/vim-javascript'
+    let g:javascript_plugin_jsdoc = 1
+    let g:javascript_plugin_flow = 1
+
+    " Generate JSDoc to your JavaScript code.
+    Plug 'heavenshell/vim-jsdoc'
+    nmap <silent> <leader>j <Plug>(jsdoc)
+    let g:jsdoc_enable_es6 = 1
+
     " emmet for vim:
     Plug 'mattn/emmet-vim', { 'for': ['html', 'javascript.jsx']}
     " emmet
@@ -214,5 +224,6 @@ if (empty($TMUX))
   endif
 endif
 
-silent! colorscheme onedark
+silent! colorscheme PaperColor
+set background=light
 

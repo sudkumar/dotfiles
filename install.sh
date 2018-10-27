@@ -11,16 +11,18 @@ echo "Installing dotfiles."
 
 source install/link.sh
 
+source install/fonts.sh
+
 # only perform macOS-specific install
 if [ "$(uname)" == "Darwin" ]; then
     echo -e "\\n\\nRunning on OSX"
     xcode-select --install
     source install/brew.sh
+    source install/osx.sh
 fi
 
 source install/git.sh
 
-source install/fonts.sh
 
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 echo "run nvm install --lts to install lts node"

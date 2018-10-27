@@ -14,6 +14,8 @@ formulas=(
     neovim
     tmux
     diff-so-fancy
+    'yarn --without-node'
+    tree
 )
 
 for formula in "${formulas[@]}"; do
@@ -21,7 +23,7 @@ for formula in "${formulas[@]}"; do
     if brew list "$formula_name" > /dev/null 2>&1; then
         echo "$formula_name already installed... skipping."
     else
-        brew install --verbose --debug "$formula"
+        brew install --verbose --debug $formula
     fi
 done
 

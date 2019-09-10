@@ -10,12 +10,15 @@ fi
 echo -e "\\n\\nInstalling homebrew packages..."
 
 formulas=(
+    python
+    gpg
     ruby
     neovim
     tmux
     diff-so-fancy
     'yarn --without-node'
     tree
+    the_silver_searcher
 )
 
 for formula in "${formulas[@]}"; do
@@ -29,3 +32,5 @@ done
 
 gem install teamocil
 mkdir -p ~/.teamocil
+
+pip3 install pynvim

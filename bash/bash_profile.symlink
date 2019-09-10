@@ -31,6 +31,7 @@ prependToPath "$HOME/.composer/vendor/bin:$PATH"
 
 # user overrides
 prependToPath "$HOME/local/bin"
+prependToPath "$HOME/local/sbin"
 prependToPath "$DOTFILES/bin"
 
 export EDITOR='nvim'
@@ -59,3 +60,5 @@ fi
 if [[ -a ~/.localrc ]]; then
     . ~/.localrc
 fi
+
+export GPG_TTY=$(tty)

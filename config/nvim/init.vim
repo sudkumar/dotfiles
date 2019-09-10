@@ -1,8 +1,9 @@
 " set the leader
-let mapleader=","
+let mapleader=" "
 
 " Basic settings
 filetype plugin indent on
+set mouse=a
 syntax enable
 set autoread " detect when a file is changed
 set history=1000 " change history to 1000
@@ -10,7 +11,7 @@ set textwidth=120
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set number " set the line number
-set mouse=a " enable the mouse
+set relativenumber
 set hidden " current buffer can be put into background
 set showbreak=... " show the line break
 set autoindent " auto indent
@@ -18,10 +19,18 @@ set scrolloff=1 " skip one line on the top/bottom while scrolling
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab  " tab behaviour to spaces
 set ignorecase smartcase hlsearch incsearch magic " for smart searching
 " to clear the highlighted search
-noremap <space> :set hlsearch! hlsearch?<cr>
-set backspace=indent,eol,start " backspace should work like normal
+noremap <leader>, :set hlsearch! hlsearch?<cr>
 set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
 set cursorline " set the cursor line
+" open the current file in new tab
+noremap tt :tabedit %<CR>
+
+if &term =~ '256color'
+  " disable Background Color Erase (BCE) so that color schemes
+  " render properly when inside 256-color tmux and GNU screen.
+  " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
+  set t_ut=
+endif
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -40,8 +49,20 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 
 " General purpose
+    " Plugin to help you stop repeating the basic movement keys
+    " :help work-motions and :h motion
+    Plug 'takac/vim-hardtime'
+    let g:hardtime_default_on = 0
+    let g:list_of_disabled_keys = ["<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
+
+    Plug 'sheerun/vim-polyglot'
+    Plug 'joshdick/onedark.vim'
+    " color scheme
+    Plug 'NLKNguyen/papercolor-theme'
+
     " repeat.vim: enable repeating supported plugin maps with '.'
     Plug 'tpope/vim-repeat'
+
     " surround.vim: quoting/parenthesizing made simple
     Plug 'tpope/vim-surround'
     " EditorConfig plugin for Vim
@@ -60,17 +81,40 @@ call plug#begin('~/.vim/plugged')
         " no whitespace extension required
         let g:airline#extensions#whitespace#enabled = 0
 
-    " Fuzzy file, buffer, mru, tag, etc finder.
-    Plug 'ctrlpvim/ctrlp.vim'
-    " settings
-        let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+    " Dark powered asynchronous unite all interfaces for Neovim/Vim8
+    Plug 'Shougo/denite.nvim'
+    " === Denite shorcuts === "
+    "   ;         - Browser currently open buffers
+    "   <leader>t - Browse list of files in current directory
+    "   <leader>g - Search current directory for occurences of given term and
+    "   close window if no results
+    "   <leader>j - Search current directory for occurences of word under cursor
+    nmap <leader>; :Denite buffer -split=floating -winrow=1<CR>
+    nmap <leader>t :Denite file/rec -split=floating -winrow=1<CR>
+    nnoremap <leader>f :<C-u>Denite grep:. -no-empty -split=floating -mode=normal<CR>
+    nnoremap <leader>j :<C-u>DeniteCursorWord grep:. -split=floating -mode=normal<CR>
 
-    " Syntax support
-    Plug 'sheerun/vim-polyglot'
-    " github color scheme
-    Plug 'cormacrelf/vim-colors-github'
-    " Light & Dark Vim color schemes inspired by Google's Material Design
-    Plug 'NLKNguyen/papercolor-theme'
+    " Custom options for Denite
+    "   auto_resize             - Auto resize the Denite window height automatically.
+    "   prompt                  - Customize denite prompt
+    "   direction               - Specify Denite window direction as directly below current pane
+    "   winminheight            - Specify min height for Denite window
+    "   highlight_mode_insert   - Specify h1-CursorLine in insert mode
+    "   prompt_highlight        - Specify color of prompt
+    "   highlight_matched_char  - Matched characters highlight
+    "   highlight_matched_range - matched range highlight
+    let s:denite_options = {'default' : {
+    \ 'auto_resize': 1,
+    \ 'prompt': 'λ:',
+    \ 'direction': 'rightbelow',
+    \ 'winminheight': '10',
+    \ 'highlight_mode_insert': 'Visual',
+    \ 'highlight_mode_normal': 'Visual',
+    \ 'prompt_highlight': 'Function',
+    \ 'highlight_matched_char': 'Function',
+    \ 'highlight_matched_range': 'Normal'
+    \ }}
+
     " nerd tree
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
     " settings
@@ -107,72 +151,45 @@ call plug#begin('~/.vim/plugged')
     endif
 
 " Language specific
+    " Commenting
+    Plug 'tpope/vim-commentary'
+
+    "Intellisense engine for vim8 & neovim, full language server protocol support as VSCode
+    " Note: for vim users, global installed `vim-node-rpc` module is required.
+    Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+    " === coc.nvim === "
+    nmap <silent> <leader>gd <Plug>(coc-definition)
+    nmap <silent> <leader>gr <Plug>(coc-references)
+    nmap <silent> <leader>gj <Plug>(coc-implementation)
+    " extensions
+    Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
+    Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
+
     " Javascript syntax
     Plug 'pangloss/vim-javascript'
     let g:javascript_plugin_jsdoc = 1
     let g:javascript_plugin_flow = 1
 
-    " Generate JSDoc to your JavaScript code.
-    Plug 'heavenshell/vim-jsdoc'
-    nmap <silent> <leader>j <Plug>(jsdoc)
-    let g:jsdoc_enable_es6 = 1
+    " Typescript syntax
+    Plug 'leafgarland/typescript-vim'
 
-    " emmet for vim:
-    Plug 'mattn/emmet-vim', { 'for': ['html', 'javascript.jsx']}
-    " emmet
-        let g:user_emmet_settings = {
-        \  'javascript.jsx': {
-        \      'extends': 'jsx',
-        \  },
-        \}
-        let g:user_emmet_leader_key='<C-e>'
 
-    " React JSX syntax highlighting and indenting for vim.
-    Plug 'mxw/vim-jsx', { 'for': ['javascript.jsx', 'javascript'] }
+    " PHP Syntax
+    Plug 'StanAngeloff/php.vim'
+
 
     " Vim bundle for styled-components based javascript files.
     Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
-    " Asynchronous linting/fixing for Vim and Language Server Protocol (LSP) integration
-    Plug 'w0rp/ale'
-    " ale settings
-        " fix on save
-        let g:ale_fix_on_save = 1
-        " only run the specified linters
-        let g:ale_linters_explicit = 1
-        " show the errors all the time
-        let g:ale_sign_column_always = 1
-
-        " fixers
-        let g:ale_fixers = {
-        \   'javascript': ['prettier'],
-        \   'css': ['prettier'],
-        \   'scss': ['prettier'],
-        \   'sass': ['prettier'],
-        \   'json': ['prettier'],
-        \   'yml': ['prettier'],
-        \   'markdown': ['prettier'],
-        \}
-        " linters
-        let g:ale_linter_aliases = {'jsx': 'css'}
-        let g:ale_linters = {
-        \   'javascript': ['eslint'],
-        \   'jsx': ['stylelint', 'eslint'],
-        \}
-        " navigate between errors
-        nmap <silent> [e <Plug>(ale_previous_wrap)
-        nmap <silent> ]e <Plug>(ale_next_wrap)
-
-        " message formatting
-        let g:ale_sign_error = 'x'
-        let g:ale_sign_warning = '>'
-        let g:ale_echo_msg_error_str = 'x'
-        let g:ale_echo_msg_warning_str = '>'
-        let g:ale_echo_msg_format = '%severity% %s% [%linter%% code%]'
-
 
 " Initialize plugin system
 call plug#end()
+
 
 augroup ConfigGroup
     autocmd!
@@ -205,25 +222,21 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-" use a slightly darker background, like GitHub inline code blocks
-let g:github_colors_soft = 1
+" copy to clipboard
+vmap <Leader>y "+y
+" delete and copy to clipboard
+vmap <Leader>d "+d
 
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
-"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-if (empty($TMUX))
-  if (has("nvim"))
-    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  endif
-  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-  if (has("termguicolors"))
-    set termguicolors
-  endif
+" denite with ag
+if executable('ag')
+    call denite#custom#var('file/rec', 'command',
+        \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
 endif
+
+" airline with coc
+let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+
 
 silent! colorscheme PaperColor
 set background=light
-

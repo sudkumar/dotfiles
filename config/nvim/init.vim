@@ -4,12 +4,12 @@ let mapleader=" "
 " Basic settings
 filetype plugin indent on
 set mouse=a
-syntax enable
 set autoread " detect when a file is changed
 set history=1000 " change history to 1000
 set textwidth=120
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set nobackup
+syntax on
+set nowritebackup
 set number " set the line number
 set relativenumber
 set hidden " current buffer can be put into background
@@ -18,12 +18,25 @@ set autoindent " auto indent
 set scrolloff=1 " skip one line on the top/bottom while scrolling
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab  " tab behaviour to spaces
 set ignorecase smartcase hlsearch incsearch magic " for smart searching
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
 " to clear the highlighted search
 noremap <leader>, :set hlsearch! hlsearch?<cr>
 set t_Co=256 " Explicitly tell vim that the terminal supports 256 colors
 set cursorline " set the cursor line
 " open the current file in new tab
 noremap tt :tabedit %<CR>
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
 
 if &term =~ '256color'
   " disable Background Color Erase (BCE) so that color schemes
@@ -31,6 +44,9 @@ if &term =~ '256color'
   " see also http://snk.tuxfamily.org/log/vim-256color-bce.html
   set t_ut=
 endif
+set termguicolors
+
+set cmdheight=2
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -45,19 +61,20 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Auto Correct for misspelled words
+    " ctrl-l autocorrect the last misspelled word in insert mode
+    inoremap <C-L> <C-G>u<Esc>[s1z=`]a<C-G>u
+    hi clear SpellBad
+    hi SpellBad cterm=underline
+    " auto enable spell check for documents
+    autocmd FileType latex,tex,md,markdown setlocal spell spelllang=en_us
+
 call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 
 " General purpose
-    " Plugin to help you stop repeating the basic movement keys
-    " :help work-motions and :h motion
-    Plug 'takac/vim-hardtime'
-    let g:hardtime_default_on = 0
-    let g:list_of_disabled_keys = ["<UP>", "<DOWN>", "<LEFT>", "<RIGHT>"]
 
-    Plug 'sheerun/vim-polyglot'
-    Plug 'joshdick/onedark.vim'
-    " color scheme
+    " Color scheme
     Plug 'NLKNguyen/papercolor-theme'
 
     " repeat.vim: enable repeating supported plugin maps with '.'
@@ -65,11 +82,12 @@ call plug#begin('~/.vim/plugged')
 
     " surround.vim: quoting/parenthesizing made simple
     Plug 'tpope/vim-surround'
+
     " EditorConfig plugin for Vim
     Plug 'editorconfig/editorconfig-vim'
+
     " lean & mean status/tabline for vim that's light as air
     Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
     " airline settings
         " enable integration with ale
         let g:airline#extensions#ale#enabled = 1
@@ -81,42 +99,11 @@ call plug#begin('~/.vim/plugged')
         " no whitespace extension required
         let g:airline#extensions#whitespace#enabled = 0
 
-    " Dark powered asynchronous unite all interfaces for Neovim/Vim8
-    Plug 'Shougo/denite.nvim'
-    " === Denite shorcuts === "
-    "   ;         - Browser currently open buffers
-    "   <leader>t - Browse list of files in current directory
-    "   <leader>g - Search current directory for occurences of given term and
-    "   close window if no results
-    "   <leader>j - Search current directory for occurences of word under cursor
-    nmap <leader>; :Denite buffer -split=floating -winrow=1<CR>
-    nmap <leader>t :Denite file/rec -split=floating -winrow=1<CR>
-    nnoremap <leader>f :<C-u>Denite grep:. -no-empty -split=floating -mode=normal<CR>
-    nnoremap <leader>j :<C-u>DeniteCursorWord grep:. -split=floating -mode=normal<CR>
-
-    " Custom options for Denite
-    "   auto_resize             - Auto resize the Denite window height automatically.
-    "   prompt                  - Customize denite prompt
-    "   direction               - Specify Denite window direction as directly below current pane
-    "   winminheight            - Specify min height for Denite window
-    "   highlight_mode_insert   - Specify h1-CursorLine in insert mode
-    "   prompt_highlight        - Specify color of prompt
-    "   highlight_matched_char  - Matched characters highlight
-    "   highlight_matched_range - matched range highlight
-    let s:denite_options = {'default' : {
-    \ 'auto_resize': 1,
-    \ 'prompt': 'λ:',
-    \ 'direction': 'rightbelow',
-    \ 'winminheight': '10',
-    \ 'highlight_mode_insert': 'Visual',
-    \ 'highlight_mode_normal': 'Visual',
-    \ 'prompt_highlight': 'Function',
-    \ 'highlight_matched_char': 'Function',
-    \ 'highlight_matched_range': 'Normal'
-    \ }}
 
     " nerd tree
     Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+    let g:NERDTreeWinPos = "right"
+    " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
     " settings
         " Toggle NERDTree
         function! ToggleNerdTree()
@@ -130,8 +117,13 @@ call plug#begin('~/.vim/plugged')
         nmap <silent> <leader>k :call ToggleNerdTree()<cr>
 
 
-    " vim stargify
-    Plug 'mhinz/vim-startify'
+    " Fuzzy file, buffer, mru, tag etc finder
+    Plug 'ctrlpvim/ctrlp.vim'
+        " Open with leader-t
+        let g:ctrlp_map = '<leader>t'
+        let g:ctrlp_cmd = 'CtrlP'
+        " Use a custom file listing command:
+        let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
 " Tmux integration
     " seamless navigation betweeen tmux and vim
@@ -141,51 +133,69 @@ call plug#begin('~/.vim/plugged')
     " A Git wrapper so awesome, it should be illegal
     Plug 'tpope/vim-fugitive'
 
-    if has("signs")
-        " A Vim plugin which shows a git diff in the gutter (sign column) and stages/undoes hunks.
-        Plug 'airblade/vim-gitgutter'
-        " vim gitgutter
-            " jump between hunks
-            nmap [h <Plug>GitGutterNextHunk
-            nmap ]h <Plug>GitGutterPrevHunk
+    " A Vim plugin which shows a git diff in the gutter (sign column) and stages/undoes hunks.
+    if has('nvim') || has('patch-8.0.902')
+      Plug 'mhinz/vim-signify'
+    else
+      Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
     endif
+    let g:signify_sign_add    = '┃'
+    let g:signify_sign_change = '┃'
+    let g:signify_sign_delete = '•'
+
+    let g:signify_sign_show_count = 0 " Don’t show the number of deleted lines.
 
 " Language specific
     " Commenting
     Plug 'tpope/vim-commentary'
 
-    "Intellisense engine for vim8 & neovim, full language server protocol support as VSCode
-    " Note: for vim users, global installed `vim-node-rpc` module is required.
-    Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
-    " === coc.nvim === "
+    " Javascript Syntax
+    " Plug 'pangloss/vim-javascript'
+    " Plug 'maxmellon/vim-jsx-pretty'
+    Plug 'sheerun/vim-polyglot'
+
+
+    " Auto completion and linting
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
     nmap <silent> <leader>gd <Plug>(coc-definition)
     nmap <silent> <leader>gr <Plug>(coc-references)
     nmap <silent> <leader>gj <Plug>(coc-implementation)
+    nmap <leader>rn <Plug>(coc-rename)
+
+    " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+    nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
+    nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
+
+    " Use K to show documentation in preview window.
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    " Add `:OR` command for organize imports of the current buffer.
+    command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+    " Map function and class text objects
+    " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+    xmap if <Plug>(coc-funcobj-i)
+    omap if <Plug>(coc-funcobj-i)
+    xmap af <Plug>(coc-funcobj-a)
+    omap af <Plug>(coc-funcobj-a)
+    xmap ic <Plug>(coc-classobj-i)
+    omap ic <Plug>(coc-classobj-i)
+    xmap ac <Plug>(coc-classobj-a)
+    omap ac <Plug>(coc-classobj-a)
+
+    function! s:show_documentation()
+      if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+      elseif (coc#rpc#ready())
+        call CocActionAsync('doHover')
+      else
+        execute '!' . &keywordprg . " " . expand('<cword>')
+      endif
+    endfunction
+
     " extensions
-    Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
-    Plug 'neoclide/coc-python', {'do': 'yarn install --frozen-lockfile'}
-
-    " Javascript syntax
-    Plug 'pangloss/vim-javascript'
-    let g:javascript_plugin_jsdoc = 1
-    let g:javascript_plugin_flow = 1
-
-    " Typescript syntax
-    Plug 'leafgarland/typescript-vim'
-
-
-    " PHP Syntax
-    Plug 'StanAngeloff/php.vim'
-
-
-    " Vim bundle for styled-components based javascript files.
-    Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-
+    let g:coc_global_extensions = ['coc-prettier', 'coc-css', 'coc-json', 'coc-tsserver', 'coc-eslint', 'coc-phpls']
 
 " Initialize plugin system
 call plug#end()
@@ -211,6 +221,7 @@ augroup ConfigGroup
 	" Set syntax highlighting for specific file types
     autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
     autocmd BufRead,BufNewFile *.md set filetype=markdown
+    autocmd BufRead,BufNewFile *.{hbs,ejs,njk,svelte} set filetype=html
     autocmd BufRead,BufNewFile .{jscs,jshint,eslint,prettier,babel}rc set filetype=json
     autocmd QuickFixCmdPost *grep* cwindow
 augroup END
@@ -222,21 +233,9 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
-" copy to clipboard
-vmap <Leader>y "+y
-" delete and copy to clipboard
-vmap <Leader>d "+d
-
-" denite with ag
-if executable('ag')
-    call denite#custom#var('file/rec', 'command',
-        \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
-endif
+set background=light
+colorscheme PaperColor
 
 " airline with coc
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
-
-
-silent! colorscheme PaperColor
-set background=light

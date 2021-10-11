@@ -19,6 +19,8 @@ formulas=(
     'yarn --without-node'
     tree
     the_silver_searcher
+    redis
+    antigen
 )
 
 for formula in "${formulas[@]}"; do
@@ -34,3 +36,5 @@ gem install teamocil
 mkdir -p ~/.teamocil
 
 pip3 install pynvim
+
+brew services start redis

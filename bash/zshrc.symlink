@@ -1,9 +1,6 @@
-# fix issue in tmux
-if [ -f /etc/profile ]; then
-    PATH=""
-    source /etc/profile
-fi
-export TERM="xterm-256color"
+PATH=""
+
+export TERM="screen-256color"
 
 function prependToPath {
   case ":$PATH:" in
@@ -22,12 +19,20 @@ function appendToPath {
 export DOTFILES=$HOME/.dotfiles
 export BASH=$DOTFILES/bash
 
+prependToPath "/bin"
+prependToPath "/sbin"
+prependToPath "/usr/bin"
+prependToPath "/usr/sbin"
+
 # base local
 prependToPath "/usr/local/bin"
 prependToPath "/usr/local/sbin"
+prependToPath "/usr/local/mysql/bin"
 
 # composer overrides
 prependToPath "$HOME/.composer/vendor/bin:$PATH"
+# ruby overrides
+prependToPath "$HOME/local/opt/ruby/bin:$PATH"
 
 # user overrides
 prependToPath "$HOME/local/bin"
@@ -62,3 +67,25 @@ if [[ -a ~/.localrc ]]; then
 fi
 
 export GPG_TTY=$(tty)
+
+prependToPath "$HOME/.cargo/bin"
+
+
+
+#############
+## Antigen ##
+#############
+if [[ -a $HOME/local/share/antigen/antigen.zsh ]]; then
+    source $HOME/local/share/antigen/antigen.zsh
+
+    source $HOME/.config/zsh/.theme
+
+    antigen use oh-my-zsh
+    antigen theme robbyrussell
+
+    antigen bundle git
+    antigen bundle command-not-foun
+    antigen bundle zsh-users/zsh-syntax-highlighting
+
+    antigen apply
+fi
